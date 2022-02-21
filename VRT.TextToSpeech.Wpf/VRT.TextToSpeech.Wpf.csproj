@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Microphone.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Microphone.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MaterialDesignThemes" Version="4.3.0" />
+    <PackageReference Include="ReactiveUI" Version="17.1.50" />
+    <PackageReference Include="ReactiveUI.Fody" Version="17.1.50" />
+    <PackageReference Include="ReactiveUI.WPF" Version="17.1.50" />
+    <PackageReference Include="System.Speech" Version="6.0.0" />
+  </ItemGroup>
+
+</Project>
