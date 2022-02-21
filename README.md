@@ -1,7 +1,7 @@
 # Text To Speech App
 This application converts Text To Speech using Voices installed in Your Windows operating system.
 
-![Screenshot](doc/main_scr.png)
+<img src="doc/main_scr.png" width="400">
 
 ## Installation Instructions
 You will need to build the project to create an executable file.
