@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:VRT.TextToSpeech.Wpf"
         xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="VRT Speech To Text for Windows" Height="360" Width="665"
+        Title="VRT Text To Speech for Windows" Height="360" Width="665"
         WindowStartupLocation="CenterScreen"
         >
     <Grid>
