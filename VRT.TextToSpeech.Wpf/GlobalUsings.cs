@@ -9,3 +9,5 @@ global using System.Threading.Tasks;
 global using System.Windows.Input;
 global using VRT.TextToSpeech.Wpf.Common;
 global using VRT.TextToSpeech.Wpf.Models;
+global using VRT.TextToSpeech.Wpf.Extensions;
+global using CSharpFunctionalExtensions;

@@ -18,8 +18,9 @@ public sealed class MainWindowViewModel : BaseViewModel
         LoadVoicesCommand.Execute(System.Reactive.Unit.Default);
 
         this.WhenAnyValue(p => p.SelectedVoice, r => r.CurrentRate)
-            .Throttle(TimeSpan.FromMilliseconds(1200))
             .ObserveOnDispatcher()
+            .Where(_ => State != SpeechStates.Idle)
+            .Throttle(TimeSpan.FromMilliseconds(1200))            
             .Subscribe(s => RestartSpeechEngineIfInProgress())
             .DisposeWith(Disposables);            
     }
@@ -31,9 +32,9 @@ public sealed class MainWindowViewModel : BaseViewModel
     [Reactive]
     public SpeechStates State { get; set; }    
     [Reactive]
-    public IReadOnlyCollection<string>? Voices { get; set; }
+    public IReadOnlyCollection<BasicVoiceInfo>? Voices { get; set; }
     [Reactive]
-    public string? SelectedVoice { get; set; }
+    public BasicVoiceInfo? SelectedVoice { get; set; }
     [Reactive]
     public int CarretIndex { get; set; }
 
@@ -44,11 +45,13 @@ public sealed class MainWindowViewModel : BaseViewModel
 
     public Task LoadVoices()
     {
-        var engine = new SpeechSynthesizer();
-        Voices = engine.GetInstalledVoices()
+        Voices = CreateSynthesizer()
+            .GetInstalledVoices()
             .Where(e => e.Enabled)
-            .Select(s => s.VoiceInfo.Name)
-            .ToArray();
+            .Select(s => new BasicVoiceInfo(s.VoiceInfo.Name, s.VoiceInfo.Culture.Name))
+            .OrderBy(s => s.CultureName)
+            .ThenBy(s => s.Name)
+            .ToArray();  
         return Task.CompletedTask;
     }
 
@@ -61,7 +64,7 @@ public sealed class MainWindowViewModel : BaseViewModel
         }
         else
         {            
-            DoPrompt(SelectedVoice!, CurrentTextToRead!);
+            DoPrompt(SelectedVoice!.Name, CurrentTextToRead!);
         }        
     }
 
@@ -97,7 +100,7 @@ public sealed class MainWindowViewModel : BaseViewModel
             (state, voice, textToRead) =>
             {
                 return state == SpeechStates.Paused || (state == SpeechStates.Idle
-                    && string.IsNullOrWhiteSpace(voice) == false
+                    && voice !=null
                     && string.IsNullOrWhiteSpace(textToRead) == false);
             })
             .ObserveOnDispatcher();
@@ -136,7 +139,7 @@ public sealed class MainWindowViewModel : BaseViewModel
     {
         if (State == SpeechStates.InProgress)
         {            
-            DoPrompt(SelectedVoice!, CurrentTextToRead!);
+            DoPrompt(SelectedVoice!.Name, CurrentTextToRead!);
         }
     }
 
@@ -154,11 +157,7 @@ public sealed class MainWindowViewModel : BaseViewModel
     private SpeechSynthesizer InitSynthesizer()
     {
         CleanupSynthesizer();
-        _synthesizer = new SpeechSynthesizer()
-        {
-            Rate = CurrentRate,
-            Volume = 100
-        };
+        _synthesizer = CreateSynthesizer();        
         _synthesizer.SpeakCompleted += OnSpeekCompleted;
         _synthesizer.SpeakProgress += OnSpeakProgress;
         return _synthesizer;
@@ -182,6 +181,16 @@ public sealed class MainWindowViewModel : BaseViewModel
 
     private void OnSpeekCompleted(object? sender, SpeakCompletedEventArgs e)
     {
-        CleanupSynthesizer();        
+        CleanupSynthesizer();
+        _readWords.Clear();
     }    
+    private SpeechSynthesizer CreateSynthesizer()
+    {        
+        var result = new SpeechSynthesizer()
+        {
+            Rate = CurrentRate,
+            Volume = 100
+        }.InjectOneCoreVoices();        
+        return result;
+    }
 }
