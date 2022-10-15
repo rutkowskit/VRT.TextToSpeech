@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VRT.TextToSpeech.Wpf"
-        xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes" 
+        d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
         Title="VRT Text To Speech for Windows" Height="360" Width="665"
         WindowStartupLocation="CenterScreen"
@@ -12,7 +13,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>            
         </Grid.ColumnDefinitions>        
         <WrapPanel Orientation="Vertical">
             <ComboBox                 
@@ -22,7 +23,7 @@
                 Margin="0 0 15 0"
                 ToolTip="Select voice"
                 ItemsSource="{Binding Voices}"
-                SelectedValue="{Binding SelectedVoice}"                
+                SelectedValue="{Binding Options.Voice}"                
                 >
             </ComboBox>
             <Grid Margin="0 10 0 0">
@@ -36,13 +37,13 @@
                         Width="150"
                         Margin="10 0 0 0"
                         Minimum="-10" Maximum="10" ToolTip="Rate" 
-                        Value="{Binding CurrentRate}"          
+                        Value="{Binding Options.CurrentRate}"          
                         material:HintAssist.Hint="Rate"
                         Style="{StaticResource MaterialDesignSlider}"
                         TickFrequency="1"
                         TickPlacement="Both">
                     </Slider>
-                    <TextBlock Width="70" Text="{Binding CurrentRate}" 
+                    <TextBlock Width="70" Text="{Binding Options.CurrentRate}" 
                        VerticalAlignment="Center"
                        FontSize="18" Margin="10 0 10 0">
                     </TextBlock>
@@ -60,7 +61,25 @@
                 <Button Margin="5" Command="{Binding StopReadingCommand}">
                     <material:PackIcon Kind="Stop" />
                 </Button>
-            </WrapPanel>            
+            </WrapPanel>
+            <CheckBox Content="Output speech to file"
+                      Margin="0 10"
+                      IsChecked="{Binding Options.OutputToAudioFile}"
+                      />
+            <Grid Visibility="{Binding  Options.OutputToAudioFile, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>                    
+                </Grid.ColumnDefinitions>
+                <TextBox IsReadOnly="True" Text="{Binding Options.OutputFileName}"></TextBox>
+                <Button Grid.Column="1" 
+                        x:Name="BrowseOutputFileButton"
+                        Content="[...]" Margin="5 0 0 0" Click="OnBrowseOutputFileButton" />
+            </Grid>
+            <TextBlock Text="{Binding ErrorMessage}" 
+                       Foreground="Red" 
+                       FontSize="14"
+                       TextWrapping="WrapWithOverflow"/>
         </WrapPanel>
         <TextBox            
             Grid.Column="1"            
@@ -71,7 +90,7 @@
             HorizontalAlignment="Stretch"                        
             material:HintAssist.Hint="Text to read"
             Margin="10"            
-            Text="{Binding CurrentTextToRead, UpdateSourceTrigger=PropertyChanged}"            
+            Text="{Binding Options.CurrentTextToRead, UpdateSourceTrigger=PropertyChanged}"
             TextWrapping="Wrap"            
             >            
         </TextBox>

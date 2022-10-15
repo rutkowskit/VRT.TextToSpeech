@@ -1,5 +1,5 @@
 # Text To Speech App
-This application converts Text To Speech using Voices installed in Your Windows operating system.
+This application converts text to speech with the help of voices installed in the Windows operating system.
 
 <img src="doc/main_scr.png" width="400">
 
@@ -7,7 +7,11 @@ This application converts Text To Speech using Voices installed in Your Windows 
 You will need to build the project to create an executable file.
 In the project directory, run this command at the command line:
 
-    dotnet publish -c Release --self-contained false
+```dotnet publish -c Release --self-contained false```
+
+or if you prefere less number of dll-s, then you can use the following command:
+
+```dotnet publish -c Release -p:PublishSingleFile=true --self-contained false -r win-x64```
 
 Copy items from publish directory and place it in the directory of your desire. Double-click the exe file to execute the application.
 
@@ -16,9 +20,9 @@ Copy items from publish directory and place it in the directory of your desire. 
   * .NET Runtime 6.0.2 (**https://dotnet.microsoft.com/en-us/download/dotnet/6.0**)
   
 ## Current Features
- * Converts Text from the Text field into Speech and send it to default output audio device 
+ 1. Converts text in text box to speech. Then sends it to the default audio output device,
+ 1. Saving of speech to an audio file.
 
-## Possible Ideas
- * Write Speech into audio file
+## Possible Ideas 
  * Save current state (Text and Progress) when application closes and restore it after application starts
  * Save current user configuration

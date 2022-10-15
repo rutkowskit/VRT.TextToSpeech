@@ -5,4 +5,6 @@ public sealed record BasicVoiceInfo(string Name, string CultureName)
     {
         return $"{Name} - {CultureName}";
     }
+    public static implicit operator string(BasicVoiceInfo info) 
+        => info?.Name ?? "";
 }

@@ -1,8 +1,9 @@
-﻿using System.Reactive.Disposables;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Reactive.Disposables;
 
 namespace VRT.TextToSpeech.Wpf.Common;
 
-public abstract class BaseViewModel : ReactiveObject, IReactiveObject, IDisposable
+public abstract class BaseViewModel : ObservableObject, IDisposable
 {
     private bool _disposedValue;
     protected CompositeDisposable Disposables { get; }
